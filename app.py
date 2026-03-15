@@ -286,20 +286,48 @@ if file and target != "Select file first":
                         col1, col2 = st.columns(2)
                     
                     with (col1 if i % 2 == 0 else col2):
-                        fig = px.histogram(df, x=col, nbins=30, title=f"Distribution of {col}")
-                        fig.update_layout(height=300)
+                        series = df[col].dropna()
+                        if series.nunique() <= 20:
+                            vc = series.value_counts().sort_index()
+                            fig = px.bar(
+                                x=vc.index,
+                                y=vc.values,
+                                title=f"Distribution of {col}",
+                                labels={"x": col, "y": "Count"}
+                            )
+                            fig.update_traces(marker_color="#1f77b4", marker_line_color="#0d3b66", marker_line_width=1)
+                        else:
+                            fig = px.histogram(
+                                df,
+                                x=col,
+                                nbins=30,
+                                title=f"Distribution of {col}",
+                                color_discrete_sequence=["#1f77b4"]
+                            )
+                            fig.update_traces(marker_line_color="#0d3b66", marker_line_width=1)
+                        fig.update_layout(
+                            height=320,
+                            template="plotly_white",
+                            plot_bgcolor="white",
+                            paper_bgcolor="white",
+                            xaxis_title=col,
+                            yaxis_title="Count"
+                        )
                         st.plotly_chart(fig, width='stretch')
             
             st.markdown("---")
             
             st.markdown("### 🎯 Target Variable Distribution")
             
+            target_counts = df[target].dropna().value_counts().sort_index()
             fig = px.bar(
-                df[target].value_counts(),
+                x=target_counts.index,
+                y=target_counts.values,
                 title=f"Distribution of {target}",
-                labels={'index': target, 'value': 'Count'}
+                labels={"x": target, "y": "Count"}
             )
-            fig.update_layout(height=400)
+            fig.update_traces(marker_color="#2ca02c", marker_line_color="#1b5e20", marker_line_width=1)
+            fig.update_layout(height=400, template="plotly_white", plot_bgcolor="white", paper_bgcolor="white")
             st.plotly_chart(fig, width='stretch')
 
 
