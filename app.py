@@ -12,6 +12,19 @@ sys.path.insert(0,str(Path(__file__).parent))
 
 from src.pipeline import MLpipeline
 
+
+def _safe_dataframe_for_streamlit(df: pd.DataFrame) -> pd.DataFrame:
+    safe_df = df.copy()
+    for col in safe_df.columns:
+        safe_df[col] = safe_df[col].map(
+            lambda value: value
+            if isinstance(value, (str, int, float, bool, type(None)))
+            else str(value)
+        )
+        if safe_df[col].dtype == "object":
+            safe_df[col] = safe_df[col].astype(str)
+    return safe_df
+
 st.set_page_config(page_title="AutoML")
 
 st.title("AutoML Platform")
@@ -77,7 +90,7 @@ if file and target != "Select file first":
         with tab1:
             st.subheader("Model leaderboard")
             lb = st.session_state.leaderboard.get_leaderboard()
-            st.dataframe(lb,use_container_width=True)
+            st.dataframe(_safe_dataframe_for_streamlit(lb),use_container_width=True)
 
         with tab2:
             st.subheader("Best Model Metrics")
