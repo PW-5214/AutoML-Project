@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import sys
 from pathlib import Path
+from io import BytesIO
 import plotly.express as px
 import plotly.graph_objects as go
 import seaborn as sns
@@ -37,7 +38,11 @@ with st.sidebar:
 
     cols = []
     if file:
-        df = pd.read_csv(file) if file.name.endswith('.csv') else pd.read_excel(file)
+        file_bytes = file.getvalue()
+        df = pd.read_csv(BytesIO(file_bytes)) if file.name.endswith('.csv') else pd.read_excel(BytesIO(file_bytes))
+        st.session_state.uploaded_df = df.copy()
+        st.session_state.uploaded_file_bytes = file_bytes
+        st.session_state.uploaded_file_name = file.name
         cols = df.columns.to_list()
         st.success(f"✅ {df.shape[0]} rows, {df.shape[1]} cols")
     
@@ -50,7 +55,10 @@ if file and target != "Select file first":
         path = f"data/raw/uploaded.csv"
 
         with open(path,"wb") as f:
-            f.write(file.getbuffer())
+            if "uploaded_file_bytes" in st.session_state:
+                f.write(st.session_state.uploaded_file_bytes)
+            else:
+                f.write(file.getbuffer())
         
         with st.spinner("Running Pipeline..."):
             try:
@@ -236,24 +244,29 @@ if file and target != "Select file first":
         
         with tab6:
             st.subheader("📊 Exploratory Data Analysis")
+            df_eda = st.session_state.get("uploaded_df", df)
+
+            if df_eda is None or df_eda.empty:
+                st.warning("No data available for EDA plots. Please re-upload the dataset.")
+                st.stop()
             
             col1,col2,col3 = st.columns(3)
             
             with col1:
                 st.markdown("### Dataset Info")
-                st.write(f"**Rows:** {df.shape[0]}")
-                st.write(f"**Columns:** {df.shape[1]}")
-                st.write(f"**Memory:** {df.memory_usage().sum() / 1024:.2f} KB")
+                st.write(f"**Rows:** {df_eda.shape[0]}")
+                st.write(f"**Columns:** {df_eda.shape[1]}")
+                st.write(f"**Memory:** {df_eda.memory_usage().sum() / 1024:.2f} KB")
             
             with col2:
                 st.markdown("### Data Types")
-                types = df.dtypes.value_counts()
+                types = df_eda.dtypes.value_counts()
                 for dtype, count in types.items():
                     st.write(f"**{dtype}:** {count}")
             
             with col3:
                 st.markdown("### Missing Values")
-                missing = df.isnull().sum()
+                missing = df_eda.isnull().sum()
                 if missing.sum() == 0:
                     st.write("✅ No missing values")
                 else:
@@ -263,7 +276,7 @@ if file and target != "Select file first":
             st.markdown("---")
             
             st.markdown("### 📈 Correlation Matrix")
-            numeric_df = df.select_dtypes(include=['number'])
+            numeric_df = df_eda.select_dtypes(include=['number'])
             
             if len(numeric_df.columns) > 1:
                 fig, ax = plt.subplots(figsize=(10, 8))
@@ -276,7 +289,7 @@ if file and target != "Select file first":
             
             st.markdown("### 📊 Distribution Plots")
             
-            numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+            numeric_cols = df_eda.select_dtypes(include=['number']).columns.tolist()
             
             if numeric_cols:
                 cols_to_plot = numeric_cols[:6]
@@ -286,7 +299,7 @@ if file and target != "Select file first":
                         col1, col2 = st.columns(2)
                     
                     with (col1 if i % 2 == 0 else col2):
-                        series = df[col].dropna()
+                        series = df_eda[col].dropna()
                         if series.nunique() <= 20:
                             vc = series.value_counts().sort_index()
                             fig = px.bar(
@@ -298,7 +311,7 @@ if file and target != "Select file first":
                             fig.update_traces(marker_color="#1f77b4", marker_line_color="#0d3b66", marker_line_width=1)
                         else:
                             fig = px.histogram(
-                                df,
+                                df_eda,
                                 x=col,
                                 nbins=30,
                                 title=f"Distribution of {col}",
@@ -319,7 +332,7 @@ if file and target != "Select file first":
             
             st.markdown("### 🎯 Target Variable Distribution")
             
-            target_counts = df[target].dropna().value_counts().sort_index()
+            target_counts = df_eda[target].dropna().value_counts().sort_index()
             fig = px.bar(
                 x=target_counts.index,
                 y=target_counts.values,
