@@ -300,48 +300,38 @@ if file and target != "Select file first":
                     
                     with (col1 if i % 2 == 0 else col2):
                         series = df_eda[col].dropna()
+                        fig, ax = plt.subplots(figsize=(6, 3.5))
                         if series.nunique() <= 20:
                             vc = series.value_counts().sort_index()
-                            fig = px.bar(
-                                x=vc.index,
-                                y=vc.values,
-                                title=f"Distribution of {col}",
-                                labels={"x": col, "y": "Count"}
-                            )
-                            fig.update_traces(marker_color="#1f77b4", marker_line_color="#0d3b66", marker_line_width=1)
+                            ax.bar(vc.index.astype(str), vc.values, color="#1f77b4", edgecolor="#0d3b66")
+                            ax.set_xlabel(col)
+                            ax.set_ylabel("Count")
+                            ax.set_title(f"Distribution of {col}")
+                            ax.tick_params(axis='x', rotation=45)
                         else:
-                            fig = px.histogram(
-                                df_eda,
-                                x=col,
-                                nbins=30,
-                                title=f"Distribution of {col}",
-                                color_discrete_sequence=["#1f77b4"]
-                            )
-                            fig.update_traces(marker_line_color="#0d3b66", marker_line_width=1)
-                        fig.update_layout(
-                            height=320,
-                            template="plotly_white",
-                            plot_bgcolor="white",
-                            paper_bgcolor="white",
-                            xaxis_title=col,
-                            yaxis_title="Count"
-                        )
-                        st.plotly_chart(fig, width='stretch')
+                            ax.hist(series, bins=30, color="#1f77b4", edgecolor="#0d3b66")
+                            ax.set_xlabel(col)
+                            ax.set_ylabel("Count")
+                            ax.set_title(f"Distribution of {col}")
+                        ax.grid(alpha=0.2)
+                        plt.tight_layout()
+                        st.pyplot(fig)
+                        plt.close(fig)
             
             st.markdown("---")
             
             st.markdown("### 🎯 Target Variable Distribution")
             
             target_counts = df_eda[target].dropna().value_counts().sort_index()
-            fig = px.bar(
-                x=target_counts.index,
-                y=target_counts.values,
-                title=f"Distribution of {target}",
-                labels={"x": target, "y": "Count"}
-            )
-            fig.update_traces(marker_color="#2ca02c", marker_line_color="#1b5e20", marker_line_width=1)
-            fig.update_layout(height=400, template="plotly_white", plot_bgcolor="white", paper_bgcolor="white")
-            st.plotly_chart(fig, width='stretch')
+            fig, ax = plt.subplots(figsize=(8, 4))
+            ax.bar(target_counts.index.astype(str), target_counts.values, color="#2ca02c", edgecolor="#1b5e20")
+            ax.set_title(f"Distribution of {target}")
+            ax.set_xlabel(target)
+            ax.set_ylabel("Count")
+            ax.grid(alpha=0.2)
+            plt.tight_layout()
+            st.pyplot(fig)
+            plt.close(fig)
 
 
 else:
