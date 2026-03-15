@@ -91,7 +91,7 @@ if file and target != "Select file first":
             st.subheader("Model leaderboard")
             lb = st.session_state.leaderboard.get_leaderboard()
             lb_view = _safe_dataframe_for_streamlit(lb)
-            st.markdown(lb_view.to_markdown(index=False))
+            st.text(lb_view.to_string(index=False))
 
         with tab2:
             st.subheader("Best Model Metrics")
