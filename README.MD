@@ -1,24 +1,42 @@
-# AutoML Project
+# 🤖 AutoML Platform 🚀
 
-An end-to-end AutoML platform that trains multiple models, compares performance with a leaderboard, generates reports, and provides a Streamlit UI.
+An end-to-end **Automated Machine Learning (AutoML) system** that simplifies the entire ML pipeline — from data ingestion to model deployment.
+The platform automatically trains multiple models, compares performance, and provides insights through reports and an interactive **Streamlit UI**.
 
-## Features
+---
 
-- Automatic data ingestion and validation
-- Preprocessing (missing values, encoding, train-test split)
-- Feature engineering (polynomial features + feature selection)
-- Multi-model training for classification and regression
-- Hyperparameter tuning
-- Model leaderboard and best model selection
-- Evaluation metrics and bias detection
-- Explainability (feature importance)
-- Report generation and model persistence
-- Streamlit web application for interactive usage
+## ✨ Features
 
-## Project Structure
+* 📥 Automatic data ingestion and validation
+* 🧹 Data preprocessing (missing values, encoding, scaling)
+* 🔀 Train-test splitting
+* 🧠 Feature engineering (polynomial features + selection)
+* 🤖 Multi-model training (classification & regression)
+* ⚙️ Hyperparameter tuning
+* 🏆 Model leaderboard with best model selection
+* 📊 Evaluation metrics and bias detection
+* 🔍 Model explainability (feature importance)
+* 📝 Automated report generation
+* 💾 Model saving and persistence
+* 💬 Interactive Streamlit web app
 
-```text
-AutoML project/
+---
+
+## 🛠️ Tech Stack
+
+* **Language:** Python
+* **Frameworks:** Scikit-learn, Pandas, NumPy
+* **ML Models:** Regression & Classification algorithms
+* **Tuning:** GridSearch / RandomSearch
+* **Visualization:** Matplotlib / Seaborn
+* **Frontend:** Streamlit
+
+---
+
+## 📁 Project Structure
+
+```id="auto1"
+AutoML-project/
 ├── app.py
 ├── configs/
 ├── data/
@@ -28,69 +46,154 @@ AutoML project/
 ├── reports/
 ├── src/
 │   ├── pipeline.py
-│   ├── model_selection.py
-│   ├── evaluation.py
+│   ├── data_ingestion.py
+│   ├── preprocessing.py
 │   ├── feature_engineering.py
+│   ├── model_selection.py
+│   ├── hyperparameter_tuning.py
+│   ├── evaluation.py
+│   ├── model_leaderboard.py
+│   ├── report_engine.py
+│   ├── eda.py
 │   └── ...
-└── README.MD
+└── README.md
 ```
 
-## Installation
+---
 
-1. Create and activate a virtual environment (recommended)
+## 📦 Installation
 
-```bash
+### 1️⃣ Clone the repository
+
+```bash id="auto2"
+git clone https://github.com/your-username/AutoML-project.git
+cd AutoML-project
+```
+
+### 2️⃣ Create virtual environment
+
+```bash id="auto3"
 python -m venv .venv
-.venv\Scripts\activate
+.venv\Scripts\activate   # Windows
+source .venv/bin/activate  # Mac/Linux
 ```
 
-2. Install dependencies
+### 3️⃣ Install dependencies
 
-```bash
+```bash id="auto4"
 pip install -r requirements.txt
 ```
 
-## Run the Project
+---
 
-### 1) Run pipeline from terminal
+## ▶️ Run the Project
 
-```bash
+### 🔹 Run pipeline from terminal
+
+```bash id="auto5"
 python -m src.pipeline
 ```
 
-### 2) Run Streamlit app
+### 🔹 Run Streamlit app
 
-```bash
+```bash id="auto6"
 streamlit run app.py
 ```
 
-## Input Data
+---
 
-- Supported formats: `.csv`, `.xlsx`
-- Place files under `data/raw/` or upload from Streamlit
-- Select target column from UI before running pipeline
+## 📊 Input Data
 
-## Outputs
+* Supported formats: `.csv`, `.xlsx`
+* Place files inside:
 
-- Trained model files in `models/`
-- EDA plots and reports in `reports/`
-- Text report: `reports/model_report.txt`
-- Leaderboard shown in CLI and Streamlit
+```id="auto7"
+data/raw/
+```
 
-## Core Modules
+or upload via Streamlit UI
 
-- `src/pipeline.py` - orchestration flow
-- `src/data_ingestion.py` - loading and validation
-- `src/preprocessing.py` - cleaning and splitting
-- `src/feature_engineering.py` - feature generation/selection
-- `src/model_selection.py` - model training and scoring
-- `src/hyperparameter_tuning.py` - search tuning
-- `src/evaluation.py` - evaluation metrics
-- `src/model_leaderboard.py` - ranking models
-- `src/report_engine.py` - report generation
-- `src/eda.py` - EDA plots and analysis
+👉 Select the **target column** before running pipeline
 
-## Notes
+---
 
-- If target leakage handling is enabled in pipeline, keep target excluded during feature generation.
-- For heavy models (XGBoost/LightGBM), first run may take longer.
+## 📤 Outputs
+
+* 💾 Trained models → `models/`
+* 📊 EDA plots → `reports/`
+* 📝 Text report → `reports/model_report.txt`
+* 🏆 Leaderboard → CLI + Streamlit
+
+---
+
+## 🧠 How It Works
+
+```id="auto8"
+Data → Preprocessing → Feature Engineering → Model Training → Tuning → Evaluation → Leaderboard → Reports
+```
+
+---
+
+## 🔍 Core Modules
+
+* `pipeline.py` → Orchestrates full workflow
+* `data_ingestion.py` → Data loading & validation
+* `preprocessing.py` → Cleaning & splitting
+* `feature_engineering.py` → Feature generation & selection
+* `model_selection.py` → Model training & scoring
+* `hyperparameter_tuning.py` → Optimization
+* `evaluation.py` → Metrics & performance
+* `model_leaderboard.py` → Ranking models
+* `report_engine.py` → Report generation
+* `eda.py` → Data analysis & visualization
+
+---
+
+## ⚡ Key Highlights
+
+* ✔ Fully automated ML pipeline
+* ✔ Supports both regression & classification
+* ✔ Compares multiple models automatically
+* ✔ Provides explainability & insights
+* ✔ User-friendly UI for non-technical users
+
+---
+
+## ⚠️ Notes
+
+* Avoid **target leakage** during feature engineering
+* Heavy models (XGBoost, LightGBM) may take longer on first run
+* Ensure clean data for best performance
+
+---
+
+## 🚀 Future Improvements
+
+* 📈 MLflow integration for experiment tracking
+* 🌐 Deployment (Docker / Cloud)
+* 🧠 LLM-based insights & recommendations
+* ⚡ Auto feature selection improvements
+* 📊 Advanced visualization dashboard
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to fork and submit a PR.
+
+---
+
+## 📜 License
+
+MIT License
+
+---
+
+## 👨‍💻 Author
+
+**Prathmesh Wavhal**
+AI & Data Science Enthusiast 🚀
+
+---
+
+⭐ Star this repo if you find it useful!
