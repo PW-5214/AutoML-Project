@@ -181,13 +181,6 @@ Data → Preprocessing → Feature Engineering → Model Training → Tuning →
 
 Contributions are welcome! Feel free to fork and submit a PR.
 
----
-
-## 📜 License
-
-MIT License
-
----
 
 ## 👨‍💻 Author
 
